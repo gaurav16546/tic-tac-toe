@@ -36,33 +36,59 @@ const Gameboard = (function () {
 
 
     // }
-    const dropToken = (row, column, player = "X") => {
+    const dropToken = (row, column, player) => {
         if (board[row][column].getValue() === "null") {
             board[row][column].addToken(player);
+            console.log(`Token ${player} has been added to row ${row} and column ${column}`)
+        } else {
+            console.log(`${row} by ${column} is already taken`)
         }
-        console.log(`Token ${player} has been added to row ${row} and column ${column}`)
     };
+
 
     const printBoard = () => {
         const boardPrint = board.map((row) => row.map((cell) => cell.getValue()));
-        // for (let i = 0; i < row; i += 1) {
-        //     for (let j = 0; j < column; j += 1) {
-        //         // boardPrint.push(board[i][j].getValue());
-
-        //     }
-        // }
         console.log(boardPrint);
     };
 
     return {
         dropToken,
-        printBoard
+        printBoard, board
     }
 })();
-Gameboard.dropToken(0, 0, "x");
-Gameboard.printBoard();
-Gameboard.dropToken(0, 2, "0");
-Gameboard.printBoard();
-Gameboard.dropToken(1, 0, "x");
-Gameboard.printBoard();
 
+const displayController = (function () {
+    const playableCharacter = Player();
+    const playRound = () => {
+        const r = prompt("Enter the row");
+        const c = prompt("Enter the column");
+        Gameboard.dropToken(r, c, playableCharacter.returnToken());
+        playableCharacter.switchPlayer();
+        Gameboard.printBoard();
+    }
+    return {
+        playRound
+    }
+})();
+
+function Player(playerOne = "PlayerOne", playerTwo = "PlayerTwo") {
+    const players = [
+        {
+            name: playerOne,
+            token: "X"
+        },
+        {
+            name: playerTwo,
+            token: "O"
+        }
+    ]
+    let playerTurn = players[0];
+    const switchPlayer = () => {
+        playerTurn = playerTurn === players[0] ? players[1] : players[0];
+        console.log(`${playerTurn.name}'s turn`);
+    }
+    const returnToken = () => playerTurn.token;
+    return {
+        switchPlayer, returnToken
+    }
+}
