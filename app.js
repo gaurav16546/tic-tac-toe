@@ -26,23 +26,43 @@ const Gameboard = (function () {
 
     // const checkGameCondition = (row, column, player) => {
     //     let availableCells = 0;
-    //     for (let i = 0; i < row; i += 1) {
-    //         for (let j = 0; j < column; j += 1) {
+    //     for (let i = 0; i < 3; i += 1) {
+    //         for (let j = 0; j < 3; j += 1) {
     //             if (board[i][j].getValue() === 0)
     //                 availableCells++;
     //         }
     //     }
-    //     if (!availableCells) return;
+    //     if (!availableCells) return "draw";
 
+    //     if (availableCells <= 4 && availableCells > 1) {
+    //         ;
+    //         let countRow = 0;
+    //         let countColumn = 0;
+    //         let diagonalCount = 0;
+    //         for (let i = 0; i < 3; i++) {
+    //             if (board[i][column].getValue() === player.returnToken()) {
+    //                 countColumn++;
+    //             }
+    //             else if (board[row][i].getValue() === player.returnToken()) {
+    //                 countRow++;
+    //             }
+    //         }
+    //         if (board[0][0] === board[1][1] === board[2][2] || board[0][2] === board[1][1] === board[2][0]) {
+    //             diagonalCount++;
+    //         }
+    //     }
 
     // }
     const dropToken = (row, column, player) => {
         if (board[row][column].getValue() === "null") {
             board[row][column].addToken(player);
             console.log(`Token ${player} has been added to row ${row} and column ${column}`)
+            return true;
         } else {
-            console.log(`${row} by ${column} is already taken`)
+            console.log(`${row} by ${column} is already taken`);
+            return false;
         }
+        // checkGameCondition(row, column, player);
     };
 
 
@@ -53,7 +73,8 @@ const Gameboard = (function () {
 
     return {
         dropToken,
-        printBoard, board
+        printBoard,
+        // checkGameCondition
     }
 })();
 
@@ -62,9 +83,10 @@ const displayController = (function () {
     const playRound = () => {
         const r = prompt("Enter the row");
         const c = prompt("Enter the column");
-        Gameboard.dropToken(r, c, playableCharacter.returnToken());
-        playableCharacter.switchPlayer();
-        Gameboard.printBoard();
+        if (Gameboard.dropToken(r, c, playableCharacter.returnToken())) {
+            playableCharacter.switchPlayer();
+            Gameboard.printBoard();
+        }
     }
     return {
         playRound
