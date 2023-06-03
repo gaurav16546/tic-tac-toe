@@ -51,20 +51,20 @@ const Gameboard = (function () {
     const dropToken = (row, column, player) => {
         if (board[row][column].getValue() === "") {
             board[row][column].addToken(player);
-            console.log(`Token ${player} has been added to row ${row} and column ${column}`)
+            // console.log(`Token ${player} has been added to row ${row} and column ${column}`)
 
             return true;
         } else {
-            console.log(`${row} by ${column} is already taken`);
+            // console.log(`${row} by ${column} is already taken`);
             return false;
         }
-        // checkGameCondition(row, column, player);
+        // _checkGameCondition(row, column, player);
     };
 
 
     const printBoard = () => {
         const boardPrint = board.map((row) => row.map((cell) => cell.getValue()));
-        console.log(boardPrint);
+        // console.log(boardPrint);
     };
     const returnBoard = () => board;
     return {
@@ -74,38 +74,57 @@ const Gameboard = (function () {
     }
 })();
 
-const displayController = (function () {
-    const playableCharacter = Player();
-    const playRound = (rowSelect, columnSelect) => {
+// const displayController = (function () {
+
+// })();
+
+const screenController = (e) => {
+    e.preventDefault();
+    const cellArray = [];
+    const messageBox = document.querySelector(".message");
+    // const playableCharacter = Player();
+    const firstName = document.getElementById("name1").value;
+    const secondName = document.getElementById("name2").value;
+    const game = Player(firstName, secondName);
+    const turnDiv = document.querySelector(".turn");
+    const restartDiv = document.querySelector(".restart");
+    const gameBox = document.querySelector(".box");
+    const playerForm = document.querySelector("form");
+    gameBox.style.display = "grid";
+    playerForm.style.display = "none";
+    const _playRound = (rowSelect, columnSelect) => {
         // const r = prompt("Enter the row");
         // const c = prompt("Enter the column");
-        if (Gameboard.dropToken(rowSelect, columnSelect, playableCharacter.returnToken()) && checkFurtherGameplay(rowSelect, columnSelect, playableCharacter)) {
-            playableCharacter.switchPlayer();
+        if (Gameboard.dropToken(rowSelect, columnSelect, game.returnToken()) && _checkFurtherGameplay(rowSelect, columnSelect, game)) {
+            game.switchPlayer();
             Gameboard.printBoard();
         }
     }
-    const checkFurtherGameplay = (row, column, player) => {
-        let gameCondition = checkGameCondition(row, column, player);
+    const _checkFurtherGameplay = (row, column, player) => {
+        let gameCondition = _checkGameCondition(row, column, player);
         if (!gameCondition) {
-            console.log("Game is tied");
-            Gameboard.printBoard();
+            // console.log("Game is tied");
+            gameBox.removeEventListener('click', _clickHandlerBoard);
+            turnDiv.style.display = "none";
+            tiedMessage();
+            // Gameboard.printBoard();
             return false;
         } else if (gameCondition.length === 0) {
             return true;
         }
         else if (gameCondition.length === 3) {
-            winMessage();
-            console.log(`Winning cell are ${gameCondition}`);
-            Gameboard.printBoard();
+            turnDiv.style.display = "none";
+            _winMessage();
+            gameBox.removeEventListener('click', _clickHandlerBoard);
+            // console.log(`Winning cell are ${gameCondition}`);
+            // Gameboard.printBoard();
             return false;
         } else {
             return true;
         }
     }
-    const winMessage = () => {
-        console.log(`Game won by ${playableCharacter.returnName()}`);
-    }
-    const checkGameCondition = (row, column, player) => {
+
+    const _checkGameCondition = (row, column, player) => {
         let availableCells = 0;
         const board = Gameboard.returnBoard();
         for (let i = 0; i < 3; i += 1) {
@@ -116,7 +135,6 @@ const displayController = (function () {
         }
 
         if (availableCells <= 4 && availableCells >= 0) {
-            const cellArray = [];
             for (let i = 0; i < 3; i++) {
                 if (board[i][column].getValue() === player.returnToken()) {
                     cellArray.push([i, column]);
@@ -155,19 +173,31 @@ const displayController = (function () {
         return true;
 
     }
-    return {
-        playRound
+    const _winMessage = () => {
+        winningCells();
+        // console.log(`Game won by ${playableCharacter.returnName()}`);
+        messageBox.textContent = `${game.returnName()}' won`
     }
-})();
+    const tiedMessage = () => {
+        messageBox.textContent = "Game is tied";
+    }
 
-const screenController = (function () {
-    const game = Player();
-    const turnDiv = document.querySelector(".turn");
-    const restartDiv = document.querySelector(".restart");
-    const gameBox = document.querySelector(".box");
+    const winningCells = () => {
+        // let value = _checkFurtherGameplay();
+        for (let i = 0; i < cellArray.length; i++) {
+            let rowValue = cellArray[i][0];
+            let columnValue = cellArray[i][1];
+            let boxes = document.querySelector(`[data-row='${rowValue}'][data-column='${columnValue}']`);
+            boxes.style.display = "none";
+        }
 
+    }
+    // }
+    // return {
+    //     _playRound
+    // }
 
-    const updateScreen = () => {
+    const _updateScreen = () => {
         gameBox.textContent = "";
         const board = Gameboard.returnBoard();
 
@@ -181,21 +211,26 @@ const screenController = (function () {
                 boxCell.textContent = board[i][j].getValue();
                 gameBox.appendChild(boxCell);
             }
-        }
-        game.switchPlayer();
+        } ``
+        // game.switchPlayer();
     }
 
-    function clickHandlerBoard(e) {
+    function _clickHandlerBoard(e) {
         const selectedRow = e.target.dataset.row;
         const selectedColumn = e.target.dataset.column;
-        displayController.playRound(selectedRow, selectedColumn);
-        updateScreen();
+        _playRound(selectedRow, selectedColumn);
+        _updateScreen();
 
     }
 
-    gameBox.addEventListener("click", clickHandlerBoard);
-    updateScreen();
-})();
+    gameBox.addEventListener("click", _clickHandlerBoard);
+    _updateScreen();
+
+};
+document.getElementById("give").addEventListener('submit', screenController, { once: true });
+
+
+
 
 
 
