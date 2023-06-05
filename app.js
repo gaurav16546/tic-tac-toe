@@ -11,7 +11,7 @@ function Cell() {
         getValue,
     };
 }
-function Player(playerOne = "PlayerOne", playerTwo = "PlayerTwo") {
+function Player(playerOne, playerTwo) {
     const players = [
         {
             name: playerOne,
@@ -97,7 +97,7 @@ const screenController = (e) => {
         // const c = prompt("Enter the column");
         if (Gameboard.dropToken(rowSelect, columnSelect, game.returnToken()) && _checkFurtherGameplay(rowSelect, columnSelect, game)) {
             game.switchPlayer();
-            Gameboard.printBoard();
+            // Gameboard.printBoard();
         }
     }
     const _checkFurtherGameplay = (row, column, player) => {
@@ -174,24 +174,27 @@ const screenController = (e) => {
 
     }
     const _winMessage = () => {
-        winningCells();
-        // console.log(`Game won by ${playableCharacter.returnName()}`);
         messageBox.textContent = `${game.returnName()}' won`
+        // winningCells();
+        // console.log(`Game won by ${playableCharacter.returnName()}`);
     }
     const tiedMessage = () => {
         messageBox.textContent = "Game is tied";
     }
 
-    const winningCells = () => {
-        // let value = _checkFurtherGameplay();
-        for (let i = 0; i < cellArray.length; i++) {
-            let rowValue = cellArray[i][0];
-            let columnValue = cellArray[i][1];
-            let boxes = document.querySelector(`[data-row='${rowValue}'][data-column='${columnValue}']`);
-            boxes.style.display = "none";
-        }
+    // const winningCells = () => {
+    //     _updateScreen();
+    //     // let value = _checkFurtherGameplay();
+    //     for (let i = 0; i < cellArray.length; i++) {
+    //         let rowValue = cellArray[i][0];
+    //         let columnValue = cellArray[i][1];
+    //         let boxes = document.querySelector(`[data-row='${rowValue}'][data-column='${columnValue}']`);
+    //         // boxes.style.backgroundColor = "red";
+    //         // boxes.style.display = "none";
+    //         // console.log(boxes);
+    //     }
 
-    }
+    // }
     // }
     // return {
     //     _playRound
@@ -228,6 +231,7 @@ const screenController = (e) => {
 
 };
 document.getElementById("give").addEventListener('submit', screenController, { once: true });
+// document.getElementById
 
 
 

@@ -12,8 +12,34 @@
     <div class="container">
       <div class="box"></div>
       <div class="turn"></div>
-      <div class="restart"></div>
+      <div class="message"></div>
+      <div class="restart"><button id="restart">Restart</button></div>
     </div>
+    <form id="give" action="">
+      <label for="name1"
+        >Name1
+        <input
+          type="text"
+          placeholder="Playerone"
+          name="name1"
+          id="name1"
+          value="Playerone"
+          required
+        />
+      </label>
+      <label for="name2"
+        >Name2
+        <input
+          type="text"
+          placeholder="Playertwo"
+          name="name2"
+          id="name2"
+          value="Playertwo"
+          required
+        />
+      </label>
+      <button type="submit">submit</button>
+    </form>
     <script src="app.js"></script>
   </body>
 </html>
